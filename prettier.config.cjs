@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 // https://github.com/trivago/prettier-plugin-sort-imports/issues/117
