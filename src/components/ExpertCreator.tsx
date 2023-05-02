@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Expert } from "@prisma/client";
+import { type Expert } from "@prisma/client";
 import React, { type FormEvent } from "react";
 import { z } from "zod";
 
@@ -33,13 +33,17 @@ const ExpertCreator = () => {
       );
     }
 
-    await fetch("/api/expert-creator", {
+    const data = await fetch("/api/expert-creator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ data: { description, name, prompt, variables } }),
     });
+
+    const expert = (await data.json()) as Expert;
+
+    return expert;
   };
 
   return (
