@@ -2,10 +2,13 @@ import clsx from "clsx";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import ExpertCreator from "~/components/ExpertCreator";
 
 import Container from "~/components/container";
 import { TypographyH1, TypographyLead } from "~/components/ui/Typography";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
 
 const Home: NextPage = () => {
   return (
@@ -36,7 +39,7 @@ const Home: NextPage = () => {
               <li>About</li>
               <li>Chats</li>
               <li>
-                <Button variant="ghost" size="lg" textSize="xl">
+                <Button variant="ghost" size="lg" textsize="xl">
                   Sign In
                 </Button>
               </li>
@@ -50,6 +53,7 @@ const Home: NextPage = () => {
           <TypographyLead className="max-w-3xl">
             Here you can configure the types of helpers you want to create
           </TypographyLead>
+          <ExpertCreator />
         </Container>
       </main>
     </>

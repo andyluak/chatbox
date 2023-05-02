@@ -76,3 +76,13 @@ model Message {
   text      String      @db.Text
   type      MessageType
 }
+
+model Expert {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String   @default("")
+  variables   String[] @default([])
+  prompt      String
+}
