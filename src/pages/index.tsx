@@ -7,8 +7,6 @@ import ExpertCreator from "~/components/ExpertCreator";
 import Container from "~/components/container";
 import { TypographyH1, TypographyLead } from "~/components/ui/Typography";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
 
 const Home: NextPage = () => {
   return (
