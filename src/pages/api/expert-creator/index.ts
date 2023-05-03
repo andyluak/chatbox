@@ -1,4 +1,3 @@
-import { Expert } from "@prisma/client";
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { z } from "zod";
 
@@ -13,6 +12,9 @@ const expertBodySchema = z.object({
   }),
 });
 
+// infer the type of body but without the `data` wrapper
+export type ExpertBodyData = z.infer<typeof expertBodySchema>["data"];
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -25,6 +27,19 @@ export default async function handler(
           data,
         });
         return res.status(200).json({ expert });
+
+      case "GET":
+        const experts = await prisma.expert.findMany();
+        return res.status(200).json({ experts });
+      case "DELETE":
+        const { id } = z
+          .object({ id: z.object({ id: z.array(z.string()) }) })
+          .parse(req.query);
+        const deletedExpert = await prisma.expert.delete({
+          where: { id: id.id[0] },
+        });
+
+        return res.status(200).json({ deletedExpert });
     }
   } catch (error) {
     return res.status(400).json({

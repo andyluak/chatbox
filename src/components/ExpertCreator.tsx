@@ -5,12 +5,14 @@ import { z } from "zod";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useCreateExpert } from "~/hooks/use-experts";
 
 const ExpertCreator = () => {
-  const handleSubmit = async (e: FormEvent) => {
+  const { mutateAsync } = useCreateExpert();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.currentTarget);
     const unparsedData = Object.fromEntries(formData.entries());
 
     const expertSaveSchema = z.object({
@@ -33,17 +35,9 @@ const ExpertCreator = () => {
       );
     }
 
-    const data = await fetch("/api/expert-creator", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data: { description, name, prompt, variables } }),
-    });
+    await mutateAsync({ description, name, prompt, variables });
 
-    const expert = (await data.json()) as Expert;
-
-    return expert;
+    (e.target as HTMLFormElement).reset();
   };
 
   return (
