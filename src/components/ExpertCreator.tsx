@@ -11,6 +11,12 @@ const ExpertCreator = () => {
   const { mutateAsync } = useCreateExpert();
   const [errors, setErrors] = useState<ReturnType<typeof extractZodErrors>>([]);
 
+  const clearErrors = () => {
+    setTimeout(() => {
+      setErrors([]);
+    }, 10000);
+  };
+
   const extractVariables = (prompt: string): string[] => {
     const promptFinderRegex = /{([^}]+)}/g;
     const unformattedPromptVariables = prompt.match(promptFinderRegex);
@@ -27,6 +33,7 @@ const ExpertCreator = () => {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    setErrors([]);
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -48,6 +55,7 @@ const ExpertCreator = () => {
       if (error instanceof z.ZodError) {
         const errors = extractZodErrors(error);
         setErrors(errors);
+        clearErrors();
       }
     }
   };
