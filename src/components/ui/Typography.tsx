@@ -19,5 +19,20 @@ export const TypographyH1: TypographyProps = ({ children, className }) => {
 };
 
 export const TypographyLead: TypographyProps = ({ children, className }) => {
-  return <p className={cn("text-xl text-muted-foreground", className)}>{children}</p>;
+  return (
+    <p className={cn("text-xl text-muted-foreground", className)}>{children}</p>
+  );
+};
+
+export const TypographyH2: TypographyProps = ({ children, className }) => {
+  return (
+    <h2
+      className={cn(
+        "scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0",
+        className
+      )}
+    >
+      {children}
+    </h2>
+  );
 };

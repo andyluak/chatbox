@@ -2,8 +2,8 @@
 import React, { type FormEvent, useState } from "react";
 import { z } from "zod";
 
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { useCreateExpert } from "~/hooks/use-experts";
 import { extractZodErrors } from "~/lib/utils";
 
