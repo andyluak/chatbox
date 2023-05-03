@@ -12,7 +12,6 @@ const expertBodySchema = z.object({
   }),
 });
 
-// infer the type of body but without the `data` wrapper
 export type ExpertBodyData = z.infer<typeof expertBodySchema>["data"];
 
 export default async function handler(
@@ -26,11 +25,12 @@ export default async function handler(
         const expert = await prisma.expert.create({
           data,
         });
-        return res.status(200).json({ expert });
+        return res.status(200).json(expert);
 
       case "GET":
         const experts = await prisma.expert.findMany();
-        return res.status(200).json({ experts });
+        return res.status(200).json(experts);
+
       case "DELETE":
         const { id } = z
           .object({ id: z.object({ id: z.array(z.string()) }) })
@@ -39,7 +39,7 @@ export default async function handler(
           where: { id: id.id[0] },
         });
 
-        return res.status(200).json({ deletedExpert });
+        return res.status(200).json(deletedExpert);
     }
   } catch (error) {
     return res.status(400).json({

@@ -30,8 +30,12 @@ export function useCreateExpert() {
         },
         body: JSON.stringify({ data }),
       });
-      const newExpert = (await res.json()) as Expert;
-      return newExpert;
+      try {
+        const newExpert = (await res.json()) as Expert;
+        return newExpert;
+      } catch (error) {
+        console.error(error);
+      }
     },
     {
       onSuccess: async () => {
