@@ -1,12 +1,9 @@
-import clsx from "clsx";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 
 import ExpertCreator from "~/components/ExpertCreator";
 import Container from "~/components/container";
 import { TypographyH1, TypographyLead } from "~/components/ui/Typography";
-import { Button } from "~/components/ui/button";
 
 const Experts: NextPage = () => {
   return (
