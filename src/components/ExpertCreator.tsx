@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type Expert } from "@prisma/client";
 import React, { type FormEvent, useState } from "react";
-import { TypeOf, z } from "zod";
+import { z } from "zod";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
