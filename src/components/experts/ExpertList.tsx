@@ -21,7 +21,6 @@ import { useDeleteExpert, useGetExperts } from "~/hooks/use-experts";
 import { extractVariables } from "~/lib/utils";
 
 const ExpertList = () => {
-  const [isEditing, setIsEditing] = useState(false);
   const [editedExpert, setEditedExpert] = useState<Expert["id"]>("");
   const [editedExpertPrompt, setEditedExpertPrompt] = useState("");
   const variables: string[] = extractVariables(editedExpertPrompt);
