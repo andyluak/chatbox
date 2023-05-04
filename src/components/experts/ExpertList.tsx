@@ -1,3 +1,4 @@
+import { Edit } from "lucide-react";
 import React from "react";
 
 import { TypographyH2, TypographyLead } from "../ui/Typography";
@@ -14,7 +15,7 @@ const ExpertList = () => {
 
   return (
     <div className="max-w-xl pt-12 text-off-white md:pt-20 lg:pt-36">
-      <TypographyH2>Your Expert Designers</TypographyH2>
+      <TypographyH2>Your Experts</TypographyH2>
       <TypographyLead className="text-lg">
         Here you can modify/delete the types of helpers you want to create
       </TypographyLead>
@@ -26,6 +27,7 @@ const ExpertList = () => {
               <AccordionItem key={expert.id} value={expert.id}>
                 <AccordionTrigger>{expert.name}</AccordionTrigger>
                 <AccordionContent>
+                  <Edit />
                   <div>
                     {expert.description}
                     {expert.prompt}

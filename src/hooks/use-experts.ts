@@ -2,7 +2,10 @@ import { type Expert } from "@prisma/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 
-import { type ExpertBodyData } from "~/pages/api/expert-creator";
+import {
+  type ExpertBodyData,
+  ExpertBodyDataOptional,
+} from "~/pages/api/expert-creator";
 
 export function useGetExperts() {
   const {
@@ -55,6 +58,30 @@ export function useDeleteExpert() {
       });
       const deletedExpert = (await res.json()) as Expert;
       return deletedExpert;
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["experts"]);
+      },
+    }
+  );
+}
+
+export function useUpdateExpert() {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (data: ExpertBodyDataOptional) => {
+      const { id } = data;
+      const res = await fetch(`/api/expert-creator/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data }),
+      });
+      const updatedExpert = (await res.json()) as Expert;
+      return updatedExpert;
     },
     {
       onSuccess: async () => {
