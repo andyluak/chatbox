@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useCreateExpert } from "~/hooks/use-experts";
-import { extractZodErrors } from "~/lib/utils";
+import { extractVariables, extractZodErrors } from "~/lib/utils";
 
 const ExpertCreator = () => {
   const { mutateAsync } = useCreateExpert();
@@ -15,21 +15,6 @@ const ExpertCreator = () => {
     setTimeout(() => {
       setErrors([]);
     }, 10000);
-  };
-
-  const extractVariables = (prompt: string): string[] => {
-    const promptFinderRegex = /{([^}]+)}/g;
-    const unformattedPromptVariables = prompt.match(promptFinderRegex);
-
-    let variables: string[] = [];
-
-    if (unformattedPromptVariables && unformattedPromptVariables?.length > 0) {
-      variables = unformattedPromptVariables.map((variable) =>
-        variable.replace("{", "").replace("}", "")
-      );
-    }
-
-    return variables || [];
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

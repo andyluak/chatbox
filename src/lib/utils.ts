@@ -13,3 +13,18 @@ export const extractZodErrors = (error: z.ZodError) => {
   });
   return errors;
 };
+
+export const extractVariables = (prompt: string): string[] => {
+  const promptFinderRegex = /{([^}]+)}/g;
+  const unformattedPromptVariables = prompt.match(promptFinderRegex);
+
+  let variables: string[] = [];
+
+  if (unformattedPromptVariables && unformattedPromptVariables?.length > 0) {
+    variables = unformattedPromptVariables.map((variable) =>
+      variable.replace("{", "").replace("}", "")
+    );
+  }
+
+  return variables || [];
+};

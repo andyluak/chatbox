@@ -1,5 +1,5 @@
 import { type Expert } from "@prisma/client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   TypographyH2,
@@ -8,6 +8,8 @@ import {
   TypographyLead,
   TypographyMuted,
 } from "../ui/Typography";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import ActionsToolbar from "./ActionsToolbar";
 import {
   Accordion,
@@ -16,13 +18,19 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion";
 import { useDeleteExpert, useGetExperts } from "~/hooks/use-experts";
+import { extractVariables } from "~/lib/utils";
 
 const ExpertList = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedExpert, setEditedExpert] = useState<Expert["id"]>("");
+  const [editedExpertPrompt, setEditedExpertPrompt] = useState("");
+  const variables: string[] = extractVariables(editedExpertPrompt);
+
   const { experts } = useGetExperts<Expert>();
   const { mutate: deleteMutate } = useDeleteExpert();
   const accordionRef = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // whenever the data-state of the accordion changes, scroll to the bottom
     if (!accordionRef.current) return;
 
@@ -61,19 +69,73 @@ const ExpertList = () => {
                 <AccordionTrigger>{expert.name}</AccordionTrigger>
                 <AccordionContent>
                   <div className="flex flex-col gap-6">
-                    <ActionsToolbar onDelete={() => deleteMutate(expert.id)} />
-                    <div>
-                      <TypographyMuted>{expert.description}</TypographyMuted>
-                      <TypographyH3 className="mb-6">
-                        {expert.prompt}
-                      </TypographyH3>
-                      <p>
-                        <span className="text-lg">Variables:</span>{" "}
-                        <TypographyInlineCode>
-                          {expert.variables.join(", ")}
-                        </TypographyInlineCode>
-                      </p>
-                    </div>
+                    <ActionsToolbar
+                      onDelete={() => deleteMutate(expert.id)}
+                      onEdit={() => {
+                        setEditedExpert((prev) =>
+                          prev === expert.id ? "" : expert.id
+                        );
+                        setEditedExpertPrompt("");
+                      }}
+                    />
+                    {editedExpert === expert.id ? (
+                      <form className="relative">
+                        <Input
+                          className="absolute -top-10 h-auto border-none p-0 text-base ring-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                          type="text"
+                          name="name"
+                          id="name"
+                          autoFocus
+                          placeholder={expert.name}
+                          defaultValue={expert.name}
+                        />
+                        <Input
+                          className="h-auto border-none p-0 text-sm ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                          type="text"
+                          name="description"
+                          id="description"
+                          placeholder={expert.description}
+                          defaultValue={expert.description}
+                        />
+                        <Input
+                          type="text"
+                          className="mb-6 h-auto border-none p-0 text-2xl font-semibold tracking-tight ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                          name="prompt"
+                          id="prompt"
+                          placeholder={expert.prompt}
+                          onChange={(e) =>
+                            setEditedExpertPrompt(e.target.value)
+                          }
+                        />
+                        <p>
+                          <span className="text-lg">Variables:</span>{" "}
+                          <TypographyInlineCode>
+                            {(variables && variables.join(", ")) ||
+                              expert.variables.join(", ")}
+                          </TypographyInlineCode>
+                        </p>
+                        <Button
+                          type="submit"
+                          variant="outline"
+                          className="mt-6"
+                        >
+                          Save Changes
+                        </Button>
+                      </form>
+                    ) : (
+                      <div>
+                        <TypographyMuted>{expert.description}</TypographyMuted>
+                        <TypographyH3 className="mb-6">
+                          {expert.prompt}
+                        </TypographyH3>
+                        <p>
+                          <span className="text-lg">Variables:</span>{" "}
+                          <TypographyInlineCode>
+                            {expert.variables.join(", ")}
+                          </TypographyInlineCode>
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
