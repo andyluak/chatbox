@@ -13,15 +13,13 @@ const expertBodySchema = z.object({
 });
 
 const expertBodySchemaOptional = expertBodySchema.extend({
-  data: expertBodySchema.shape.data.partial(),
+  data: expertBodySchema.shape.data.partial().extend({
+    id: z.string(),
+  }),
 });
 
 export type ExpertBodyData = z.infer<typeof expertBodySchema>["data"];
-export type ExpertBodyDataOptional = z.infer<
-  typeof expertBodySchemaOptional
-> & {
-  id: string;
-};
+export type ExpertBodyDataOptional = z.infer<typeof expertBodySchemaOptional>;
 
 export default async function handler(
   req: NextApiRequest,

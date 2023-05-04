@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { type Expert } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 
@@ -17,8 +18,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import { useDeleteExpert, useGetExperts } from "~/hooks/use-experts";
-import { extractVariables } from "~/lib/utils";
+import {
+  useDeleteExpert,
+  useGetExperts,
+  useUpdateExpert,
+} from "~/hooks/use-experts";
+import { expertSaveSchema, extractVariables } from "~/lib/utils";
 
 const ExpertList = () => {
   const [editedExpert, setEditedExpert] = useState<Expert["id"]>("");
@@ -27,6 +32,7 @@ const ExpertList = () => {
 
   const { experts } = useGetExperts<Expert>();
   const { mutate: deleteMutate } = useDeleteExpert();
+  const { mutateAsync: editMutate } = useUpdateExpert();
   const accordionRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,7 +46,6 @@ const ExpertList = () => {
       // verify if the ref is in view
       const rect = accordionRef.current.getBoundingClientRect();
 
-      console.log({ top: rect.top, windowHeight });
       if (rect.top < windowHeight) return;
       window.scrollTo(0, windowHeight);
     });
@@ -52,6 +57,27 @@ const ExpertList = () => {
       characterData: true,
     });
   }, [accordionRef]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const unparsedData = Object.fromEntries(formData.entries());
+    try {
+      const { description, name, prompt } =
+        expertSaveSchema.parse(unparsedData);
+
+      const variables = extractVariables(prompt);
+
+      await editMutate({
+        data: { id: editedExpert, description, name, prompt, variables },
+      });
+
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="max-w-xl pt-10 text-off-white">
@@ -78,7 +104,7 @@ const ExpertList = () => {
                       }}
                     />
                     {editedExpert === expert.id ? (
-                      <form className="relative">
+                      <form className="relative" onSubmit={handleSubmit}>
                         <Input
                           className="absolute -top-10 h-auto border-none p-0 text-base ring-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                           type="text"

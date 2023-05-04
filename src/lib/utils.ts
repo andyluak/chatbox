@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type z } from "zod";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -28,3 +28,11 @@ export const extractVariables = (prompt: string): string[] => {
 
   return variables || [];
 };
+
+// Schemas
+
+export const expertSaveSchema = z.object({
+  description: z.string().optional(),
+  name: z.string().min(1),
+  prompt: z.string().min(1),
+});

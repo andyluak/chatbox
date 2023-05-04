@@ -72,7 +72,7 @@ export function useUpdateExpert() {
 
   return useMutation(
     async (data: ExpertBodyDataOptional) => {
-      const { id } = data;
+      const { id } = data.data;
       const res = await fetch(`/api/expert-creator/${id}`, {
         method: "PUT",
         headers: {

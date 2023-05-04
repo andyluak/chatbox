@@ -5,7 +5,11 @@ import { z } from "zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useCreateExpert } from "~/hooks/use-experts";
-import { extractVariables, extractZodErrors } from "~/lib/utils";
+import {
+  expertSaveSchema,
+  extractVariables,
+  extractZodErrors,
+} from "~/lib/utils";
 
 const ExpertCreator = () => {
   const { mutateAsync } = useCreateExpert();
@@ -24,11 +28,6 @@ const ExpertCreator = () => {
     const formData = new FormData(e.currentTarget);
     const unparsedData = Object.fromEntries(formData.entries());
 
-    const expertSaveSchema = z.object({
-      description: z.string().optional(),
-      name: z.string().min(1),
-      prompt: z.string().min(1),
-    });
     try {
       const { description, name, prompt } =
         expertSaveSchema.parse(unparsedData);
