@@ -74,6 +74,7 @@ const ExpertList = () => {
       });
 
       (e.target as HTMLFormElement).reset();
+      setEditedExpert("");
     } catch (error) {
       console.log(error);
     }
@@ -128,6 +129,7 @@ const ExpertList = () => {
                           name="prompt"
                           id="prompt"
                           placeholder={expert.prompt}
+                          value={editedExpertPrompt || expert.prompt}
                           onChange={(e) =>
                             setEditedExpertPrompt(e.target.value)
                           }

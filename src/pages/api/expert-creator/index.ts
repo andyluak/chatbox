@@ -12,7 +12,7 @@ const expertBodySchema = z.object({
   }),
 });
 
-const expertBodySchemaOptional = expertBodySchema.extend({
+export const expertBodySchemaOptional = expertBodySchema.extend({
   data: expertBodySchema.shape.data.partial().extend({
     id: z.string(),
   }),
@@ -47,18 +47,7 @@ export default async function handler(
         });
 
         return res.status(200).json(deletedExpert);
-      case "PUT":
-        const { data: dataOptional } = expertBodySchemaOptional.parse(req.body);
-        const { id: updateId } = z
-          .object({ id: z.object({ id: z.array(z.string()) }) })
-          .parse(req.query);
-
-        const updatedExpert = await prisma.expert.update({
-          where: { id: updateId.id[0] },
-          data: dataOptional,
-        });
-
-        return res.status(200).json(updatedExpert);
+      
     }
   } catch (error) {
     return res.status(400).json({
