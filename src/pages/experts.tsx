@@ -1,10 +1,10 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import ExpertCreator from "~/components/experts/ExpertCreator";
 import Container from "~/components/container";
-import { TypographyH1, TypographyLead } from "~/components/ui/Typography";
+import ExpertCreator from "~/components/experts/ExpertCreator";
 import ExpertList from "~/components/experts/ExpertList";
+import { TypographyH1, TypographyLead } from "~/components/ui/Typography";
 
 const Experts: NextPage = () => {
   return (
@@ -20,8 +20,10 @@ const Experts: NextPage = () => {
           <TypographyLead className="max-w-3xl">
             Here you can configure the types of helpers you want to create
           </TypographyLead>
-          <ExpertCreator />
-          <ExpertList />
+          <div className="gap-12 lg:grid lg:grid-cols-2">
+            <ExpertList />
+            <ExpertCreator />
+          </div>
         </Container>
       </main>
     </>

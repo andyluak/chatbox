@@ -36,3 +36,30 @@ export const TypographyH2: TypographyProps = ({ children, className }) => {
     </h2>
   );
 };
+
+export const TypographyMuted: TypographyProps = ({ children, className }) => {
+  return (
+    <p className={cn("text-sm text-muted-foreground", className)}>{children}</p>
+  );
+};
+
+export const TypographyH3: TypographyProps = ({ children, className }) => {
+  return (
+    <h3
+      className={cn(
+        "scroll-m-20 text-2xl font-semibold tracking-tight",
+        className
+      )}
+    >
+      {children}
+    </h3>
+  );
+};
+
+export const TypographyInlineCode: TypographyProps = ({ children, className }) =>{
+  return (
+    <code className={cn("relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold", className)}>
+      {children}
+    </code>
+  )
+}

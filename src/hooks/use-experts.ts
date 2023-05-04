@@ -4,17 +4,17 @@ import { useMutation } from "@tanstack/react-query";
 
 import {
   type ExpertBodyData,
-  ExpertBodyDataOptional,
+  type ExpertBodyDataOptional,
 } from "~/pages/api/expert-creator";
 
-export function useGetExperts() {
+export function useGetExperts<T>() {
   const {
     data: experts = [],
     isLoading,
     error,
-  } = useQuery<Expert[], Error>(["experts"], async () => {
+  } = useQuery<T[], Error>(["experts"], async () => {
     const res = await fetch("/api/expert-creator");
-    const experts = (await res.json()) as Expert[];
+    const experts = (await res.json()) as T[];
     return experts;
   });
 

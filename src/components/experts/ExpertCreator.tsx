@@ -63,7 +63,7 @@ const ExpertCreator = () => {
   return (
     <>
       <form
-        className="mt-10 flex max-w-lg flex-col gap-6 text-white"
+        className="mt-10 flex max-w-xl flex-col gap-6 text-white"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col space-y-4">
