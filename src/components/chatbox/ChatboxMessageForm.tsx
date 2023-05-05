@@ -34,13 +34,21 @@ const ChatboxMessageForm = () => {
         );
     };
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(e.currentTarget);
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+        console.log(data);
+    };
+
     return (
         <form
             className={clsx(
                 "m-auto flex w-full max-w-xl flex-row items-center justify-center p-4",
                 "[&_svg]:ml-2 [&_svg]:stroke-slate-300 [&_svg]:transition-[stroke] hover:[&_svg]:stroke-slate-400"
             )}
-            
+            onSubmit={handleSubmit}
         >
             {selectedExpert ? (
                 <>
@@ -55,6 +63,8 @@ const ChatboxMessageForm = () => {
                     <Input
                         className="max-w-xl bg-slate-800"
                         placeholder="Send a message"
+                        name="prompt"
+                        id="prompt"
                     />
                     <button type="submit">
                         <Send />
