@@ -3,7 +3,7 @@ import { HammerIcon } from "lucide-react";
 import React, { type PropsWithChildren } from "react";
 
 const ChatboxHeader: React.FC<PropsWithChildren> = ({ children }) => {
-    return <div className="">{children}</div>;
+    return <div>{children}</div>;
 };
 
 const ChatboxBody: React.FC<PropsWithChildren> = ({ children }) => {

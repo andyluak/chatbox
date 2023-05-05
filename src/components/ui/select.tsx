@@ -1,5 +1,3 @@
-"use client";
-
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 import * as React from "react";
@@ -36,7 +34,6 @@ const SelectContent = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = "popper", ...props }, ref) => (
-    <SelectPrimitive.Portal>
         <SelectPrimitive.Content
             ref={ref}
             className={cn(
@@ -57,7 +54,6 @@ const SelectContent = React.forwardRef<
                 {children}
             </SelectPrimitive.Viewport>
         </SelectPrimitive.Content>
-    </SelectPrimitive.Portal>
 ));
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 

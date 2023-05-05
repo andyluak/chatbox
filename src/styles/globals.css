@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  margin-right: 0!important;
+  overflow-y: scroll!important;
+  --removed-body-scrollbar: 0!important;
+}
+
+body {
+  --removed-body-scroll-bar-size: 0!important;
+  margin-right: 0!important;
+}
+
+
+
 @layer base {
     :root {
         --background: 224 71% 4%;

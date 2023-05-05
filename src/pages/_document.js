@@ -4,7 +4,7 @@ export default function Document() {
     return (
         <Html lang="en" className="dark bg-primary-gradient min-h-screen">
             <Head />
-            <body>
+            <body style={{marginRight: "0!important"}}>
                 <Main />
                 <NextScript />
             </body>
