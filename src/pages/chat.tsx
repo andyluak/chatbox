@@ -1,10 +1,14 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import Container from "~/components/container";
-import ExpertCreator from "~/components/experts/ExpertCreator";
-import ExpertList from "~/components/experts/ExpertList";
-import { TypographyH1, TypographyLead } from "~/components/ui/Typography";
+import {
+    Chatbox,
+    ChatboxBody,
+    ChatboxChat,
+    ChatboxFooter,
+    ChatboxHeader,
+    ChatboxSidebar,
+} from "~/components/chatbox/Chatbox";
 
 const Chats: NextPage = () => {
     return (
@@ -14,13 +18,15 @@ const Chats: NextPage = () => {
                 <meta name="description" content="Chatting with your docs" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="pt-navigation-height">
-                <h1>sal</h1>
-                <h1>sal</h1>
-                <h1>sal</h1>
-                <h1>sal</h1>
-                <h1>sal</h1>
-                <h1>sal</h1>
+            <main className="mt-8 pt-navigation-height text-off-white">
+                <Chatbox>
+                    <ChatboxSidebar>Sidebar</ChatboxSidebar>
+                    <ChatboxBody>
+                        <ChatboxHeader>Header</ChatboxHeader>
+                        <ChatboxChat>Chat</ChatboxChat>
+                        <ChatboxFooter>Footer</ChatboxFooter>
+                    </ChatboxBody>
+                </Chatbox>
             </main>
         </>
     );
