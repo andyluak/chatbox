@@ -27,7 +27,7 @@ const Navbar = () => {
                         <li>
                             <Link href="/experts">Experts</Link>
                         </li>
-                        <li>Chats</li>
+                        <li><Link href="/chat">Chat</Link></li>
                         <li>
                             <Button variant="ghost" size="lg" textsize="xl">
                                 Sign In
