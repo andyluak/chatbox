@@ -9,6 +9,7 @@ import {
     ChatboxHeader,
     ChatboxSidebar,
 } from "~/components/chatbox/Chatbox";
+import ExpertPicker from "~/components/chatbox/ExpertPicker";
 
 const Chats: NextPage = () => {
     return (
@@ -22,7 +23,9 @@ const Chats: NextPage = () => {
                 <Chatbox>
                     <ChatboxSidebar>Sidebar</ChatboxSidebar>
                     <ChatboxBody>
-                        <ChatboxHeader>Header</ChatboxHeader>
+                        <ChatboxHeader>
+                            <ExpertPicker />
+                        </ChatboxHeader>
                         <ChatboxChat>Chat</ChatboxChat>
                         <ChatboxFooter>Footer</ChatboxFooter>
                     </ChatboxBody>
