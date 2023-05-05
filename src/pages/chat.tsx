@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Laptop2, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { type NextPage } from "next";
 import Head from "next/head";
 
@@ -12,6 +12,7 @@ import {
     ChatboxSidebar,
 } from "~/components/chatbox/Chatbox";
 import ExpertPicker from "~/components/chatbox/ExpertPicker";
+import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
 import { Input } from "~/components/ui/input";
 
 const Chats: NextPage = () => {
@@ -30,7 +31,7 @@ const Chats: NextPage = () => {
                             <ExpertPicker />
                         </ChatboxHeader>
                         <ChatboxChat>
-                            <Laptop2 />
+                            <SystemMessageInserter />
                         </ChatboxChat>
                         <ChatboxFooter>
                             <form

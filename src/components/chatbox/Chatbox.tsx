@@ -15,7 +15,7 @@ const ChatboxFooter: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const ChatboxChat: React.FC<PropsWithChildren> = ({ children }) => {
-    return <div className="min-h-[40rem] border-2 py-4">{children}</div>;
+    return <div className="min-h-[40rem] py-4 px-4 rounded-lg mt-8 bg-slate-800">{children}</div>;
 };
 
 const ChatboxSidebar: React.FC<PropsWithChildren> = ({ children }) => {
