@@ -6,9 +6,9 @@ export default {
         extend: {
             backgroundImage: {
                 "primary-gradient":
-                    "linear-gradient(0deg, rgba(2,0,36,1) 59%, rgba(120,15,13,1) 100%);",
+                    "linear-gradient( 111.4deg,  rgba(7,7,9,1) 6.5%, rgba(27,24,113,1) 93.2% );",
                 "navigation-gradient":
-                    "linear-gradient(0deg, rgba(2,0,36,0.7846235795454546) 59%, rgba(120,15,13,0.6904677353896104) 100%);",
+                    "linear-gradient( 109.6deg,  rgba(20,30,48,1) 11.2%, rgba(36,59,85,1) 91.1% );",
             },
             colors: {
                 "off-white": "#EAEAEA",
