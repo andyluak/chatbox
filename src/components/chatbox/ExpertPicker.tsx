@@ -10,6 +10,7 @@ import {
     SelectValue,
 } from "~/components/ui/select";
 import { useGetExperts } from "~/hooks/use-experts";
+import { Button } from "../ui/button";
 
 const ExpertPicker = () => {
     const { experts } = useGetExperts<Expert>();
@@ -19,6 +20,7 @@ const ExpertPicker = () => {
             <TypographyMuted>
                 Select an expert or leave it empty
             </TypographyMuted>
+            <div className="flex flex-row gap-4">
             <Select>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Expert Picker" />
@@ -31,6 +33,8 @@ const ExpertPicker = () => {
                     ))}
                 </SelectContent>
             </Select>
+            <Button variant="ghost" size="sm">Clear</Button>
+            </div>
         </div>
     );
 };

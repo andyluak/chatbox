@@ -1,13 +1,13 @@
 import clsx from "clsx";
 import { HammerIcon } from "lucide-react";
-import React, { PropsWithChildren } from "react";
+import React, { type PropsWithChildren } from "react";
 
 const ChatboxHeader: React.FC<PropsWithChildren> = ({ children }) => {
     return <div className="">{children}</div>;
 };
 
 const ChatboxBody: React.FC<PropsWithChildren> = ({ children }) => {
-    return <div className="flex flex-grow flex-col">{children}</div>;
+    return <div className="flex flex-grow flex-col px-4">{children}</div>;
 };
 
 const ChatboxFooter: React.FC<PropsWithChildren> = ({ children }) => {
@@ -15,7 +15,7 @@ const ChatboxFooter: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const ChatboxChat: React.FC<PropsWithChildren> = ({ children }) => {
-    return <div>{children}</div>;
+    return <div className="min-h-[40rem] border-2 py-4">{children}</div>;
 };
 
 const ChatboxSidebar: React.FC<PropsWithChildren> = ({ children }) => {
@@ -36,10 +36,17 @@ const ChatboxSidebar: React.FC<PropsWithChildren> = ({ children }) => {
 
 const Chatbox: React.FC<PropsWithChildren> = ({ children }) => {
     return (
-        <div className="chatbox-container flex h-screen flex-row">
+        <div className="chatbox-container flex min-h-screen flex-row bg-slate-900 py-6">
             {children}
         </div>
     );
 };
 
-export { Chatbox, ChatboxHeader, ChatboxBody, ChatboxFooter, ChatboxSidebar, ChatboxChat };
+export {
+    Chatbox,
+    ChatboxHeader,
+    ChatboxBody,
+    ChatboxFooter,
+    ChatboxSidebar,
+    ChatboxChat,
+};
