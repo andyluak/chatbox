@@ -36,10 +36,8 @@ const ChatboxMessageForm = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(e.currentTarget);
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
-        console.log(data);
     };
 
     return (
