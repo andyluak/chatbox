@@ -44,7 +44,7 @@ const ExpertPicker = () => {
                         <SelectValue placeholder="Expert Picker" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value={"none"}>Expert Picker</SelectItem>
+                        <SelectItem value={"none"}>None</SelectItem>
                         {experts.map((expert) => (
                             <SelectItem key={expert.id} value={expert.id}>
                                 {expert.name}
