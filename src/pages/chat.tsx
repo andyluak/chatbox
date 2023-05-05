@@ -1,5 +1,3 @@
-import clsx from "clsx";
-import { Send } from "lucide-react";
 import { type NextPage } from "next";
 import Head from "next/head";
 
@@ -11,9 +9,9 @@ import {
     ChatboxHeader,
     ChatboxSidebar,
 } from "~/components/chatbox/Chatbox";
+import ChatboxMessageForm from "~/components/chatbox/ChatboxMessageForm";
 import ExpertPicker from "~/components/chatbox/ExpertPicker";
 import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
-import { Input } from "~/components/ui/input";
 
 const Chats: NextPage = () => {
     return (
@@ -34,21 +32,7 @@ const Chats: NextPage = () => {
                             <SystemMessageInserter />
                         </ChatboxChat>
                         <ChatboxFooter>
-                            <form
-                                className={clsx(
-                                    "flex flex-row items-center justify-center  p-4",
-                                    "[&_svg]:ml-2 [&_svg]:stroke-slate-300 [&_svg]:transition-[stroke] hover:[&_svg]:stroke-slate-400"
-                                )}
-                            >
-                                <Input
-                                    className="max-w-xl bg-slate-800"
-                                    placeholder="Send a message"
-                                />
-                                <button type="submit">
-                                    <Send />
-                                    <span className="sr-only">Send</span>
-                                </button>
-                            </form>
+                            <ChatboxMessageForm />
                         </ChatboxFooter>
                     </ChatboxBody>
                 </Chatbox>

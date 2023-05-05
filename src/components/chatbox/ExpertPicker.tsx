@@ -1,6 +1,6 @@
 import { type Expert } from "@prisma/client";
-import { useAtom, useSetAtom } from "jotai";
-import { RESET, useResetAtom } from "jotai/utils";
+import { useAtom } from "jotai";
+import { RESET } from "jotai/utils";
 import React from "react";
 
 import { TypographyMuted } from "../ui/Typography";
