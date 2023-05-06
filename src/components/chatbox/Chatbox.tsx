@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { HammerIcon, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import React, { type PropsWithChildren } from "react";
 
 const ChatboxHeader: React.FC<PropsWithChildren> = ({ children }) => {
