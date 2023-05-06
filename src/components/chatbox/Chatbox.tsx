@@ -27,10 +27,13 @@ const ChatboxSidebar: React.FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <div
-            className={clsx("ml-4 transition-[flex-basis] ease-out", {
-                "basis-[3%]": !isSidebarOpen,
-                "basis-[25%]": isSidebarOpen,
-            })}
+            className={clsx(
+                "ml-4 flex flex-col transition-[flex-basis] ease-out",
+                {
+                    "basis-[3%]": !isSidebarOpen,
+                    "basis-[25%]": isSidebarOpen,
+                }
+            )}
         >
             <button>
                 <Menu onClick={() => setIsSidebarOpen(!isSidebarOpen)} />

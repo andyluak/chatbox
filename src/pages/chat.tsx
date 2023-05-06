@@ -12,6 +12,7 @@ import {
 import ChatboxMessageForm from "~/components/chatbox/ChatboxMessageForm";
 import ExpertPicker from "~/components/chatbox/ExpertPicker";
 import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
+import { Button } from "~/components/ui/button";
 
 const Chats: NextPage = () => {
     return (
@@ -23,7 +24,11 @@ const Chats: NextPage = () => {
             </Head>
             <main className="pt-navigation-height text-off-white">
                 <Chatbox>
-                    <ChatboxSidebar></ChatboxSidebar>
+                    <ChatboxSidebar>
+                        <div className="mt-4 flex flex-col">
+                            <Button>New Chat</Button>
+                        </div>
+                    </ChatboxSidebar>
                     <ChatboxBody>
                         <ChatboxHeader>
                             <ExpertPicker />
