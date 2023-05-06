@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import { Send } from "lucide-react";
@@ -5,10 +6,15 @@ import React from "react";
 import { z } from "zod";
 
 import { Input } from "../ui/input";
-import { selectedExpertAtom } from "~/store/chatbox";
+import { useCreateChat } from "~/hooks/use-chats";
+import { selectedExpertAtom, systemMessageAtom } from "~/store/chatbox";
 
 const ChatboxMessageForm = () => {
     const [selectedExpert] = useAtom(selectedExpertAtom);
+    const [systemMessage] = useAtom(systemMessageAtom);
+
+    const { mutateAsync } = useCreateChat();
+
     const buildExpertInputs = () => {
         return (
             <div
@@ -35,7 +41,7 @@ const ChatboxMessageForm = () => {
         );
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const unparsedData = Object.fromEntries(formData.entries());
@@ -43,10 +49,12 @@ const ChatboxMessageForm = () => {
         if (!selectedExpert) {
             const promptSchema = z.object({
                 prompt: z.string().nonempty(),
+                systemMessage: z.string().optional(),
             });
 
-            const data = promptSchema.parse(unparsedData);
-            console.log(data);
+            const data = promptSchema.parse({ ...unparsedData, systemMessage });
+
+            await mutateAsync({data});
         }
     };
 

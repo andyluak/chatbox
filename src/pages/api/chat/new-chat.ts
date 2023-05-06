@@ -6,7 +6,6 @@ import {
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 } from "langchain/prompts";
-import { type AIChatMessage } from "langchain/schema";
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { z } from "zod";
 
@@ -31,6 +30,8 @@ const chatBodySchema = z.object({
         prompt: z.string(),
     }),
 });
+
+export type ChatBodySchema = z.infer<typeof chatBodySchema>;
 
 type BuilderChatPromptTemplate = {
     systemMessage?: string;
@@ -59,7 +60,9 @@ const getMessagesToSave = ({
 }: {
     prompt: string;
     systemMessage?: string;
-    AIMessage: AIChatMessage;
+    AIMessage: {
+        response: string;
+    };
 }) => {
     const messages: UnsavedMessages[] = [];
     if (systemMessage) {
@@ -75,7 +78,7 @@ const getMessagesToSave = ({
     });
 
     messages.push({
-        text: AIMessage.text,
+        text: AIMessage.response,
         type: "AI",
     });
     return messages;
@@ -103,8 +106,9 @@ export default async function handler(
                 // call chain
                 const response = (await chain.call({
                     prompt: data.prompt,
-                })) as AIChatMessage;
-
+                })) as {
+                    response: string;
+                };
                 // save chat
                 const newChat = await prisma.chat.create({
                     data: {
