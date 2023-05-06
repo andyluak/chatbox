@@ -1,3 +1,4 @@
+import { Chat } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 
@@ -13,8 +14,10 @@ import ChatboxMessageForm from "~/components/chatbox/ChatboxMessageForm";
 import ExpertPicker from "~/components/chatbox/ExpertPicker";
 import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
 import { Button } from "~/components/ui/button";
+import { useGetChats } from "~/hooks/use-chats";
 
 const Chats: NextPage = () => {
+    const { chats } = useGetChats<Chat>();
     return (
         <>
             <Head>

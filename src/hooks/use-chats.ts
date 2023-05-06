@@ -4,6 +4,20 @@ import { useMutation } from "@tanstack/react-query";
 
 import { type ChatBodySchema } from "~/pages/api/chat/new-chat";
 
+export function useGetChats<T>() {
+    const {
+        data: chats = [],
+        isLoading,
+        error,
+    } = useQuery<T[], Error>(["chats"], async () => {
+        const res = await fetch("/api/chat/get-chats");
+        const chats = (await res.json()) as T[];
+        return chats;
+    });
+
+    return { chats, isLoading, error };
+}
+
 export function useCreateChat() {
     const queryClient = useQueryClient();
 
