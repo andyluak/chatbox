@@ -29,7 +29,6 @@ const ExpertPicker = () => {
         setSelectedExpert(RESET);
     };
 
-    console.log(selectedExpert);
     return (
         <div className="space-y-4">
             <TypographyMuted>
