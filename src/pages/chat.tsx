@@ -1,8 +1,9 @@
-import { Chat } from "@prisma/client";
+import { Chat, Message } from "@prisma/client";
 import { useAtom } from "jotai";
 import { type NextPage } from "next";
 import Head from "next/head";
 
+import ChatMessage from "~/components/chatbox/ChatMessage";
 import {
     Chatbox,
     ChatboxBody,
@@ -17,10 +18,12 @@ import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
 import { Button } from "~/components/ui/button";
 import { useGetChats } from "~/hooks/use-chats";
 import { selectedChatAtom } from "~/store/chatbox";
+import { ChatWithMessages } from "~/types";
 
 const Chats: NextPage = () => {
-    const { chats } = useGetChats<Chat>();
-    const [selectedChat, setSelectedChat] = useAtom(selectedChatAtom)
+    const { chats } = useGetChats<ChatWithMessages>();
+    const [selectedChatId, setSelectedChatId] = useAtom(selectedChatAtom);
+    const selectedChat = chats.find((chat) => chat.id === selectedChatId);
 
     return (
         <>
@@ -38,11 +41,14 @@ const Chats: NextPage = () => {
                         <div className="flex flex-col gap-2">
                             {chats.map((chat) => (
                                 <Button
-                                    variant={selectedChat === chat.id ? "default" : "outline"}
+                                    variant={
+                                        selectedChatId === chat.id
+                                            ? "default"
+                                            : "outline"
+                                    }
                                     size="sm"
                                     key={chat.id}
-                                    onClick={() => setSelectedChat(chat.id)}
-                                    
+                                    onClick={() => setSelectedChatId(chat.id)}
                                 >
                                     {chat.id}
                                 </Button>
@@ -54,7 +60,17 @@ const Chats: NextPage = () => {
                             <ExpertPicker />
                         </ChatboxHeader>
                         <ChatboxChat>
-                            <SystemMessageInserter />
+                            {selectedChat ? (
+                                <div className="flex flex-col gap-4">
+                                    {selectedChat.messages.map(
+                                        (message: Message) => (
+                                            <ChatMessage key={message.id} type={message.type} text={message.text} />
+                                        )
+                                    )}
+                                </div>
+                            ) : (
+                                <SystemMessageInserter />
+                            )}
                         </ChatboxChat>
                         <ChatboxFooter>
                             <ChatboxMessageForm />
