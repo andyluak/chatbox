@@ -1,4 +1,4 @@
-import { Chat, Message } from "@prisma/client";
+import { type Message } from "@prisma/client";
 import { useAtom } from "jotai";
 import { type NextPage } from "next";
 import Head from "next/head";
@@ -18,7 +18,7 @@ import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
 import { Button } from "~/components/ui/button";
 import { useGetChats } from "~/hooks/use-chats";
 import { selectedChatAtom } from "~/store/chatbox";
-import { ChatWithMessages } from "~/types";
+import { type ChatWithMessages } from "~/types";
 
 const Chats: NextPage = () => {
     const { chats } = useGetChats<ChatWithMessages>();
@@ -64,7 +64,11 @@ const Chats: NextPage = () => {
                                 <div className="flex flex-col gap-4">
                                     {selectedChat.messages.map(
                                         (message: Message) => (
-                                            <ChatMessage key={message.id} type={message.type} text={message.text} />
+                                            <ChatMessage
+                                                key={message.id}
+                                                type={message.type}
+                                                text={message.text}
+                                            />
                                         )
                                     )}
                                 </div>
