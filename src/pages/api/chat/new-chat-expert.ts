@@ -6,7 +6,7 @@ import {
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 } from "langchain/prompts";
-import { type AIChatMessage } from "langchain/schema";
+import { type AIChatMessage, type ChainValues } from "langchain/schema";
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { z } from "zod";
 
@@ -28,21 +28,36 @@ const chat = new ChatOpenAI({
 const chatBodySchema = z.object({
     data: z.object({
         systemMessage: z.string().optional(),
-        prompt: z.string(),
+        userFormSubmission: z.record(z.string()).optional(),
+        expertTemplate: z.object({
+            id: z.string(),
+            prompt: z.string(),
+            variables: z.array(z.string()).optional(),
+        }),
+        prompt: z.string().optional(),
     }),
 });
 
+type ZExpert = z.infer<typeof chatBodySchema>["data"]["expertTemplate"];
+type ZUserFormSubmission = z.infer<
+    typeof chatBodySchema
+>["data"]["userFormSubmission"];
+
 type BuilderChatPromptTemplate = {
+    expertTemplate: ZExpert;
     systemMessage?: string;
 };
 
 const buildChatPromptTemplate = ({
+    expertTemplate,
     systemMessage,
 }: BuilderChatPromptTemplate) => {
     if (systemMessage) {
         return ChatPromptTemplate.fromPromptMessages([
             SystemMessagePromptTemplate.fromTemplate(systemMessage),
-            HumanMessagePromptTemplate.fromTemplate("{prompt}"),
+            HumanMessagePromptTemplate.fromTemplate(
+                expertTemplate.prompt ? expertTemplate.prompt : "{prompt}"
+            ),
         ]);
     }
     return ChatPromptTemplate.fromPromptMessages([
@@ -81,6 +96,37 @@ const getMessagesToSave = ({
     return messages;
 };
 
+const convertExpertTemplateToPrompt = (
+    expertTemplate: ZExpert,
+    userFormSubmission: ZUserFormSubmission,
+    prompt: string
+) => {
+    type MyAcc = {
+        [key: string]: string;
+    };
+    if (!userFormSubmission || !expertTemplate) return prompt;
+
+    // we need to return an object of the shape { variable: value }
+
+    const variables = expertTemplate.variables;
+    const variableValues = Object.values(userFormSubmission);
+
+    if (!variables || !variableValues) return prompt;
+
+    const variableValueMap = variables.reduce(
+        (acc: MyAcc, variable: keyof MyAcc) => {
+            const value =
+                userFormSubmission[variable]?.replace(`{${variable}}`, "/g") ??
+                "";
+            acc[variable] = value;
+            return acc;
+        },
+        {}
+    );
+
+    return variableValueMap;
+};
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -92,6 +138,7 @@ export default async function handler(
                 const { data } = chatBodySchema.parse(req.body);
                 // build prompt template
                 const promptTemplate = buildChatPromptTemplate({
+                    expertTemplate: data.expertTemplate,
                     systemMessage: data.systemMessage,
                 });
                 // create chain
@@ -100,10 +147,17 @@ export default async function handler(
                     llm: chat,
                 });
 
+                // create chain call data
+                const chainCallData = convertExpertTemplateToPrompt(
+                    data.expertTemplate,
+                    data.userFormSubmission,
+                    data.prompt ?? ""
+                );
+
                 // call chain
-                const response = (await chain.call({
-                    prompt: data.prompt,
-                })) as AIChatMessage;
+                const response = (await chain.call(
+                    chainCallData as ChainValues
+                )) as AIChatMessage;
 
                 // save chat
                 const newChat = await prisma.chat.create({
@@ -111,7 +165,7 @@ export default async function handler(
                         messages: {
                             createMany: {
                                 data: getMessagesToSave({
-                                    prompt: data.prompt,
+                                    prompt: data.prompt || "",
                                     systemMessage: data.systemMessage,
                                     AIMessage: response,
                                 }),

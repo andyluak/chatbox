@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useAtom } from "jotai";
 import { Send } from "lucide-react";
 import React from "react";
+import { z } from "zod";
 
 import { Input } from "../ui/input";
 import { selectedExpertAtom } from "~/store/chatbox";
@@ -37,7 +38,16 @@ const ChatboxMessageForm = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+        const unparsedData = Object.fromEntries(formData.entries());
+
+        if (!selectedExpert) {
+            const promptSchema = z.object({
+                prompt: z.string().nonempty(),
+            });
+
+            const data = promptSchema.parse(unparsedData);
+            console.log(data);
+        }
     };
 
     return (
