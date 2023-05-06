@@ -23,7 +23,7 @@ const Chats: NextPage = () => {
             </Head>
             <main className="pt-navigation-height text-off-white">
                 <Chatbox>
-                    <ChatboxSidebar>Sidebar</ChatboxSidebar>
+                    <ChatboxSidebar></ChatboxSidebar>
                     <ChatboxBody>
                         <ChatboxHeader>
                             <ExpertPicker />

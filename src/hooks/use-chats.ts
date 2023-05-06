@@ -2,7 +2,7 @@ import { type Chat } from "@prisma/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 
-import { ChatBodySchema } from "~/pages/api/chat/new-chat";
+import { type ChatBodySchema } from "~/pages/api/chat/new-chat";
 
 export function useCreateChat() {
     const queryClient = useQueryClient();

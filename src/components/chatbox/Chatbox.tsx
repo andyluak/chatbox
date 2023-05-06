@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { HammerIcon } from "lucide-react";
+import { HammerIcon, Menu } from "lucide-react";
 import React, { type PropsWithChildren } from "react";
 
 const ChatboxHeader: React.FC<PropsWithChildren> = ({ children }) => {
@@ -15,7 +15,11 @@ const ChatboxFooter: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const ChatboxChat: React.FC<PropsWithChildren> = ({ children }) => {
-    return <div className="min-h-[40rem] py-4 px-4 rounded-lg mt-8 bg-slate-800">{children}</div>;
+    return (
+        <div className="mt-8 min-h-[40rem] rounded-lg bg-slate-800 px-4 py-4">
+            {children}
+        </div>
+    );
 };
 
 const ChatboxSidebar: React.FC<PropsWithChildren> = ({ children }) => {
@@ -23,12 +27,15 @@ const ChatboxSidebar: React.FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <div
-            className={clsx("transition-[flex-basis] ease-out", {
+            className={clsx("ml-4 transition-[flex-basis] ease-out", {
                 "basis-[3%]": !isSidebarOpen,
                 "basis-[25%]": isSidebarOpen,
             })}
         >
-            <HammerIcon onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+            <button>
+                <Menu onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+                <span className="sr-only">Toggle sidebar</span>
+            </button>
             {isSidebarOpen && children}
         </div>
     );
