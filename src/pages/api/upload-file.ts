@@ -14,7 +14,9 @@ const s3Client = new AWS.S3({
     secretAccessKey: "S3RVER",
 });
 
-async function uploadFile(file: { newFilename: string; filepath: string; mimetype: string }) {
+type FileType = { newFilename: string; filepath: string; mimetype: string };
+
+async function uploadFile(file: FileType) {
     const params = {
         Bucket: "chat-with-docs-bucket",
         Key: file.newFilename,
@@ -23,6 +25,12 @@ async function uploadFile(file: { newFilename: string; filepath: string; mimetyp
         ACL: "public-read",
     };
     return s3Client.upload(params).promise();
+}
+
+interface FormData {
+    files: {
+        file: FileType;
+    };
 }
 
 export default async function handler(
@@ -41,15 +49,20 @@ export default async function handler(
     try {
         // get the form data
         const form = new formidable.IncomingForm();
-        const formData = await new Promise((resolve, reject) => {
+        const formData: FormData = await new Promise((resolve, reject) => {
             form.parse(req, (err, fields, files) => {
                 if (err) return reject(err);
-                resolve({ fields, files });
+                const file = files.file as FileType;
+                const fData = {
+                    files: {
+                        file,
+                    },
+                };
+                resolve(fData);
             });
         });
-
-        // upload the file
-        const uploadedFile = await uploadFile(formData.files.file);
+        const file = formData.files.file;
+        await uploadFile(file);
 
         res.status(200).json({
             data: {
@@ -58,18 +71,11 @@ export default async function handler(
             error: null,
         });
     } catch (e) {
-        if (e instanceof FormidableError) {
-            res.status(e.httpCode || 400).json({
-                data: null,
-                error: e.message,
-            });
-        } else {
-            console.error(e);
-            res.status(500).json({
-                data: null,
-                error: "Internal Server Error",
-            });
-        }
+        console.error(e);
+        res.status(500).json({
+            data: null,
+            error: "Internal Server Error",
+        });
     }
 }
 
