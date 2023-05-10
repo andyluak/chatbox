@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import { Send } from "lucide-react";
@@ -12,11 +13,21 @@ import {
     selectedExpertAtom,
     systemMessageAtom,
 } from "~/store/chatbox";
+import { type ChatWithMessages } from "~/types";
 
 const ChatboxMessageForm = () => {
     const [selectedExpert] = useAtom(selectedExpertAtom);
     const [systemMessage] = useAtom(systemMessageAtom);
-    const [selectedChatId] = useAtom(selectedChatAtom);
+    const [selectedChatId, setSelectedChatId] = useAtom(selectedChatAtom);
+    const chatsFromQuery = useQueryClient().getQueryData([
+        "chats",
+    ]) as ChatWithMessages[];
+
+    const temp = chatsFromQuery.find(({ id }) => id === "temp-id");
+
+    if (temp) {
+        setSelectedChatId(temp.id);
+    }
 
     const { mutateAsync } = useCreateChat();
 
@@ -64,7 +75,13 @@ const ChatboxMessageForm = () => {
                 chatId: selectedChatId,
             });
 
-            await mutateAsync({ data });
+            const res = await mutateAsync({ data });
+
+            if (res) {
+                setSelectedChatId(res.id);
+            }
+
+            (e.target as HTMLFormElement)?.reset();
         }
     };
 

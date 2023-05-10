@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 
 import { type ChatBodySchema } from "~/pages/api/chat/new-chat";
+import { type ChatWithMessages } from "~/types";
 
 export function useGetChats<T>() {
     const {
@@ -37,7 +38,7 @@ export function useCreateChat() {
                 body: JSON.stringify(data),
             });
             try {
-                const newChat = (await res.json()) as Chat;
+                const newChat = (await res.json()) as ChatWithMessages;
                 return newChat;
             } catch (error) {
                 console.error(error);
@@ -46,6 +47,70 @@ export function useCreateChat() {
         {
             onSuccess: async () => {
                 await queryClient.invalidateQueries(["chats"]);
+            },
+            onMutate(variables) {
+                const previousChats = queryClient.getQueryData<
+                    ChatWithMessages[]
+                >(["chats"]);
+
+                if (variables.data.chatId) {
+                    const updatedChat = previousChats?.find(
+                        (chat) => chat.id === variables.data.chatId
+                    );
+                    if (updatedChat) {
+                        updatedChat.messages.push({
+                            id: "temp-id",
+                            text: variables.data.prompt,
+                            type: "Human",
+                            createdAt: new Date(),
+                            updatedAt: new Date(),
+                            chatId: variables.data.chatId,
+                        });
+
+                        queryClient.setQueryData<ChatWithMessages[]>(
+                            ["chats"],
+                            (old) => {
+                                if (old) {
+                                    return [
+                                        ...old.filter(
+                                            (chat) =>
+                                                chat.id !==
+                                                variables.data.chatId
+                                        ),
+                                        updatedChat,
+                                    ];
+                                }
+                            }
+                        );
+                    }
+
+                    return;
+                }
+
+                const newChat: ChatWithMessages = {
+                    id: "temp-id",
+                    messages: [
+                        {
+                            id: "temp-id",
+                            text: variables.data.prompt,
+                            type: "Human",
+                            createdAt: new Date(),
+                            updatedAt: new Date(),
+                            chatId: "temp-id",
+                        },
+                    ],
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+
+                queryClient.setQueryData<ChatWithMessages[]>(
+                    ["chats"],
+                    (old) => {
+                        if (old) {
+                            return [...old, newChat];
+                        }
+                    }
+                );
             },
         }
     );
