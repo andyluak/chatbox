@@ -28,7 +28,7 @@ const Chats: NextPage = () => {
     return (
         <>
             <Head>
-                <title>Chat With Docs - Experts</title>
+                <title>Chat With Docs - Chat</title>
                 <meta name="description" content="Chatting with your docs" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
