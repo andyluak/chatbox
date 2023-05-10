@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { type Message } from "@prisma/client";
 import { useAtom } from "jotai";
+import { RESET } from "jotai/utils";
 import { type NextPage } from "next";
 import Head from "next/head";
 
@@ -17,12 +19,14 @@ import ExpertPicker from "~/components/chatbox/ExpertPicker";
 import SystemMessageInserter from "~/components/chatbox/SystemMessageInserter";
 import { Button } from "~/components/ui/button";
 import { useGetChats } from "~/hooks/use-chats";
-import { selectedChatAtom } from "~/store/chatbox";
+import { selectedChatAtom, selectedExpertAtom } from "~/store/chatbox";
 import { type ChatWithMessages } from "~/types";
 
 const Chats: NextPage = () => {
     const { chats } = useGetChats<ChatWithMessages>();
     const [selectedChatId, setSelectedChatId] = useAtom(selectedChatAtom);
+    const [_, setSelectedExpert] = useAtom(selectedExpertAtom);
+
     const selectedChat = chats.find((chat) => chat.id === selectedChatId);
 
     return (
@@ -36,7 +40,14 @@ const Chats: NextPage = () => {
                 <Chatbox>
                     <ChatboxSidebar>
                         <div className="my-4 flex flex-col">
-                            <Button>New Chat</Button>
+                            <Button
+                                onClick={() => {
+                                    setSelectedChatId(RESET);
+                                    setSelectedExpert(RESET);
+                                }}
+                            >
+                                New Chat
+                            </Button>
                         </div>
                         <div className="flex flex-col gap-2">
                             {chats.map((chat) => (
@@ -48,7 +59,10 @@ const Chats: NextPage = () => {
                                     }
                                     size="sm"
                                     key={chat.id}
-                                    onClick={() => setSelectedChatId(chat.id)}
+                                    onClick={() => {
+                                        setSelectedChatId(chat.id);
+                                        setSelectedExpert(RESET);
+                                    }}
                                 >
                                     {chat.id}
                                 </Button>
