@@ -23,7 +23,13 @@ export function useCreateChat() {
 
     return useMutation(
         async (data: ChatBodySchema) => {
-            const res = await fetch("/api/chat/new-chat", {
+            let url = "/api/chat/new-chat";
+
+            if (data.data.chatId) {
+                url = `/api/chat/${data.data.chatId}`;
+            }
+
+            const res = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

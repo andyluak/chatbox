@@ -5,6 +5,7 @@ import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import {
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
+    MessagesPlaceholder,
     SystemMessagePromptTemplate,
 } from "langchain/prompts";
 import {
@@ -33,38 +34,27 @@ const chat = new ChatOpenAI({
 const chatBodySchema = z.object({
     data: z.object({
         systemMessage: z.string().optional(),
-        userFormSubmission: z.record(z.string()).optional(),
-        expertTemplate: z.object({
-            id: z.string(),
-            prompt: z.string(),
-            variables: z.array(z.string()).optional(),
-        }),
+        prompt: z.string().nonempty(),
     }),
 });
 
-type ZExpert = z.infer<typeof chatBodySchema>["data"]["expertTemplate"];
-
 type BuilderChatPromptTemplate = {
-    expertTemplate: ZExpert;
     systemMessage?: string;
-    prompt: string;
 };
 
 const buildChatPromptTemplate = ({
-    expertTemplate,
     systemMessage,
-    prompt,
 }: BuilderChatPromptTemplate) => {
     if (systemMessage) {
         return ChatPromptTemplate.fromPromptMessages([
             SystemMessagePromptTemplate.fromTemplate(systemMessage),
-            HumanMessagePromptTemplate.fromTemplate(
-                expertTemplate.prompt ? expertTemplate.prompt : prompt
-            ),
+            new MessagesPlaceholder("history"),
+            HumanMessagePromptTemplate.fromTemplate("{prompt}"),
         ]);
     }
     return ChatPromptTemplate.fromPromptMessages([
-        HumanMessagePromptTemplate.fromTemplate(prompt),
+        new MessagesPlaceholder("history"),
+        HumanMessagePromptTemplate.fromTemplate("{prompt}"),
     ]);
 };
 
@@ -88,6 +78,31 @@ const convertMessagesToLangChainFormat = (
     });
 };
 
+type UnsavedMessages = Pick<Message, "text" | "type">;
+
+const getMessagesToSave = ({
+    prompt,
+    AIMessage,
+}: {
+    prompt: string;
+    systemMessage?: string;
+    AIMessage: {
+        response: string;
+    };
+}) => {
+    const messages: UnsavedMessages[] = [];
+    messages.push({
+        text: prompt,
+        type: "Human",
+    });
+
+    messages.push({
+        text: AIMessage.response,
+        type: "AI",
+    });
+    return messages;
+};
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -95,7 +110,6 @@ export default async function handler(
     try {
         switch (req.method) {
             case "POST":
-                // we will need to get the prompt to add it fromTemplate
                 const { data } = chatBodySchema.parse(req.body);
                 const { id } = z
                     .object({ id: z.array(z.string()) })
@@ -111,9 +125,7 @@ export default async function handler(
                 });
                 // have the template
                 const promptTemplate = buildChatPromptTemplate({
-                    expertTemplate: data.expertTemplate,
                     systemMessage: data.systemMessage,
-                    prompt: data.expertTemplate.prompt,
                 });
 
                 const pastMessages = convertMessagesToLangChainFormat(
@@ -123,36 +135,39 @@ export default async function handler(
                 // we need to get the past messages
                 const memory = new BufferMemory({
                     chatHistory: new ChatMessageHistory(pastMessages),
+                    returnMessages: true,
+                    memoryKey: "history",
                 });
 
                 const chain = new ConversationChain({
-                    memory,
+                    memory: memory,
                     prompt: promptTemplate,
                     llm: chat,
                 });
 
                 const response = (await chain.call({
-                    text: "Hello",
-                })) as AIChatMessage;
+                    prompt: data.prompt,
+                })) as {
+                    response: string;
+                };
 
                 // we need to save the response to the database
-                const newMessage = await prisma.message.create({
+                const updatedChat = await prisma.chat.update({
+                    where: { id: id[0] },
                     data: {
-                        text: response.text,
-                        type: "AI",
-                        chat: {
-                            connect: {
-                                id: id[0],
-                            },
+                        messages: {
+                            create: getMessagesToSave({
+                                prompt: "Hello",
+                                AIMessage: response,
+                            }),
                         },
                     },
                 });
 
-                return res.status(200).json({
-                    message: newMessage,
-                });
+                return res.status(200).json(updatedChat);
         }
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             message: "Invalid request body",
         });

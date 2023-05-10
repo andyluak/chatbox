@@ -7,11 +7,16 @@ import { z } from "zod";
 
 import { Input } from "../ui/input";
 import { useCreateChat } from "~/hooks/use-chats";
-import { selectedExpertAtom, systemMessageAtom } from "~/store/chatbox";
+import {
+    selectedChatAtom,
+    selectedExpertAtom,
+    systemMessageAtom,
+} from "~/store/chatbox";
 
 const ChatboxMessageForm = () => {
     const [selectedExpert] = useAtom(selectedExpertAtom);
     const [systemMessage] = useAtom(systemMessageAtom);
+    const [selectedChatId] = useAtom(selectedChatAtom);
 
     const { mutateAsync } = useCreateChat();
 
@@ -50,11 +55,16 @@ const ChatboxMessageForm = () => {
             const promptSchema = z.object({
                 prompt: z.string().nonempty(),
                 systemMessage: z.string().optional(),
+                chatId: z.string().optional(),
             });
 
-            const data = promptSchema.parse({ ...unparsedData, systemMessage });
+            const data = promptSchema.parse({
+                ...unparsedData,
+                systemMessage,
+                chatId: selectedChatId,
+            });
 
-            await mutateAsync({data});
+            await mutateAsync({ data });
         }
     };
 

@@ -28,6 +28,7 @@ const chatBodySchema = z.object({
     data: z.object({
         systemMessage: z.string().optional(),
         prompt: z.string(),
+        chatId: z.string().optional(),
     }),
 });
 
