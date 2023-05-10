@@ -29,6 +29,6 @@
         "**/*.cjs",
         "**/*.mjs",
         "src/pages/_document.js"
-    ],
+, "s3.js", "src/pages/upload-file.tsx"    ],
     "exclude": ["node_modules"]
 }
