@@ -1,9 +1,24 @@
-import { type Chat } from "@prisma/client";
+import { type Message } from "@prisma/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 
 import { type ChatBodySchema } from "~/pages/api/chat/new-chat";
 import { type ChatWithMessages } from "~/types";
+
+const createTempMessage = ({
+    text,
+    chatId = "temp-id",
+}: {
+    text: string;
+    chatId?: string;
+}): Message => ({
+    id: "temp-id",
+    text,
+    type: "Human",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    chatId,
+});
 
 export function useGetChats<T>() {
     const {
@@ -58,14 +73,12 @@ export function useCreateChat() {
                         (chat) => chat.id === variables.data.chatId
                     );
                     if (updatedChat) {
-                        updatedChat.messages.push({
-                            id: "temp-id",
-                            text: variables.data.prompt,
-                            type: "Human",
-                            createdAt: new Date(),
-                            updatedAt: new Date(),
-                            chatId: variables.data.chatId,
-                        });
+                        updatedChat.messages.push(
+                            createTempMessage({
+                                text: variables.data.prompt,
+                                chatId: variables.data.chatId,
+                            })
+                        );
 
                         queryClient.setQueryData<ChatWithMessages[]>(
                             ["chats"],
@@ -90,14 +103,7 @@ export function useCreateChat() {
                 const newChat: ChatWithMessages = {
                     id: "temp-id",
                     messages: [
-                        {
-                            id: "temp-id",
-                            text: variables.data.prompt,
-                            type: "Human",
-                            createdAt: new Date(),
-                            updatedAt: new Date(),
-                            chatId: "temp-id",
-                        },
+                        createTempMessage({ text: variables.data.prompt }),
                     ],
                     createdAt: new Date(),
                     updatedAt: new Date(),
