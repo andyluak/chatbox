@@ -43,24 +43,21 @@ const UploadFile = () => {
         setPreviewUrl(null);
     };
 
-    // const onUploadFile = (e: MouseEvent<HTMLButtonElement>) => {
-    //     e.preventDefault();
-    //     console.log(file);
-    //     // send the file to api/upload-file
-    //     const res = fetch("/api/upload-file", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/pdf" },
-    //         body: file,
-    //     });
-    // };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (file === null) return;
         const formData = new FormData();
+
         formData.append("file", file);
+        const fileName = file?.name || "test.pdf";
+
+        const headers = new Headers({ "X-File-Name": fileName });
+
         const response = await fetch("/api/upload-file", {
             method: "POST",
             body: formData,
+            // send the file name as header
+            headers: headers,
         });
     };
 
